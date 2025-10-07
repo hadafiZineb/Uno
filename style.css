@@ -2,16 +2,7 @@
 
 * {
     margin: 0;
-    pa.card {
-    background: var(--norsys-white);
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #E0E0E0;
-}
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -39,6 +30,964 @@ body {
     min-height: 100vh;
     color: var(--norsys-text);
     overflow-x: hidden;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 300px;
+    animation: slideIn 0.3s ease;
+    border-left: 4px solid var(--norsys-primary);
+}
+
+.notification-success {
+    border-left-color: var(--success-green);
+}
+
+.notification-warning {
+    border-left-color: var(--warning-orange);
+}
+
+.notification-error {
+    border-left-color: var(--error-red);
+}
+
+.notification-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    margin-left: 15px;
+}
+
+.notification-close:hover {
+    color: #666;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Styles pour les modes */
+.mode-selector {
+    margin-bottom: 30px;
+}
+
+.role-card {
+    transition: all 0.3s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.organizer-header {
+    border: 2px solid var(--norsys-primary);
+}
+
+.participant-info {
+    border: 2px solid var(--success-green);
+}
+
+/* Mode lecture seule */
+.readonly-section {
+    position: relative;
+}
+
+.readonly-section::before {
+    content: '🔒 Lecture seule';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-orange);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+/* Navbar moderne */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--norsys-white);
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-title h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--norsys-primary);
+    font-family: 'Fredoka One', cursive;
+}
+
+.navbar-title span {
+    font-size: 0.8rem;
+    color: var(--norsys-text);
+    opacity: 0.7;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--norsys-primary);
+    color: var(--norsys-primary);
+}
+
+.btn-outline:hover {
+    background: var(--norsys-primary);
+    color: white;
+}
+
+/* Sidebar fixe à gauche */
+.sidebar {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 320px;
+    height: calc(100vh - 80px);
+    background: var(--norsys-white);
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    overflow-y: auto;
+    border-right: 1px solid #e0e0e0;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--norsys-light);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    color: var(--norsys-primary);
+}
+
+.sidebar-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--norsys-text);
+    padding: 5px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-content {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.sidebar-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: var(--norsys-light);
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-team {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sidebar-team:hover {
+    border-color: var(--norsys-primary);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+    transform: translateY(-2px);
+}
+
+.sidebar-team-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.team-status {
+    font-size: 1.2rem;
+}
+
+.sidebar-team-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.member-name {
+    background: var(--norsys-light);
+    color: var(--norsys-primary);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.team-winner {
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.team-progress {
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: var(--warning-orange);
+    color: white;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.sidebar-placeholder {
+    text-align: center;
+    color: #999;
+}
+
+/* Détails d'équipe dans la sidebar */
+.team-details {
+    padding: 0;
+}
+
+.team-details-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.team-details-header h3 {
+    margin: 0;
+    color: var(--norsys-primary);
+    clear: both;
+}
+
+.team-members-detailed {
+    margin-bottom: 20px;
+}
+
+.team-members-detailed h4 {
+    margin: 0 0 10px 0;
+    color: var(--norsys-text);
+    font-size: 0.9rem;
+}
+
+.member-detailed {
+    background: var(--norsys-light);
+    color: var(--norsys-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.team-progress-detailed h4 {
+    margin: 0 0 10px 0;
+    color: var(--norsys-text);
+    font-size: 0.9rem;
+}
+
+.match-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.match-summary.completed {
+    background: #f8f9fa;
+    border-color: #28a745;
+}
+
+.match-status {
+    font-size: 1rem;
+}
+
+.match-info {
+    flex: 1;
+    font-weight: 500;
+}
+
+.match-winner {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.final-winner {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Section pliable */
+.card-header {
+    padding: 20px;
+}
+
+.collapsible {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.collapsible:hover {
+    background: rgba(33, 150, 243, 0.05);
+}
+
+.collapse-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.collapse-icon.collapsed {
+    transform: rotate(180deg);
+}
+
+.card-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card-content.collapsed {
+    max-height: 0;
+    padding: 0 20px;
+    opacity: 0;
+}
+
+.card-content:not(.collapsed) {
+    padding: 0 20px 20px;
+}
+
+/* Navigation des équipes */
+.teams-navigation {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: var(--norsys-light);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.nav-btn {
+    background: var(--norsys-primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: var(--norsys-dark);
+    transform: scale(1.05);
+}
+
+.nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#currentTeamTitle {
+    margin: 0;
+    color: var(--norsys-primary);
+    font-size: 1.5rem;
+}
+
+.team-display {
+    padding: 30px;
+    min-height: 200px;
+}
+
+.team-pagination {
+    text-align: center;
+    padding: 15px;
+    background: var(--norsys-light);
+    color: var(--norsys-text);
+    font-weight: 600;
+}
+
+/* Styles pour l'affichage des équipes */
+.team-card-large {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-status-large {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--norsys-light);
+    color: var(--norsys-primary);
+}
+
+.team-members-large h4 {
+    margin: 0 0 15px 0;
+    color: var(--norsys-text);
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.member-card {
+    background: var(--norsys-primary);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.team-winner-badge {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 20px;
+}
+
+.team-progress-badge {
+    background: var(--warning-orange);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* Styles pour l'affichage des éliminations */
+.team-elimination-display {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.team-members-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--norsys-light);
+    border-radius: 12px;
+}
+
+.team-members-section h4 {
+    margin: 0 0 15px 0;
+    color: var(--norsys-primary);
+}
+
+.members-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.member-pill {
+    background: var(--norsys-primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.final-winner-display {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.elimination-phases {
+    space-y: 20px;
+}
+
+.elimination-round {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.elimination-round.completed {
+    border-left: 4px solid #4CAF50;
+}
+
+.elimination-round.pending {
+    border-left: 4px solid var(--warning-orange);
+}
+
+.round-header {
+    background: var(--norsys-light);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.round-header h5 {
+    margin: 0;
+    color: var(--norsys-primary);
+    font-size: 1.1rem;
+}
+
+.round-icon {
+    font-size: 1.2rem;
+}
+
+.round-progress {
+    background: var(--norsys-primary);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.players-status {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.player-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.player-status.active {
+    background: #e8f5e8;
+    border: 1px solid #4CAF50;
+}
+
+.player-status.eliminated {
+    background: #ffe8e8;
+    border: 1px solid #f44336;
+}
+
+.player-status.previously-eliminated {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    opacity: 0.7;
+}
+
+.player-icon {
+    font-size: 1.1rem;
+}
+
+.player-name {
+    font-weight: 500;
+    flex: 1;
+}
+
+.player-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.elimination-result {
+    padding: 15px 20px;
+    background: #ffe8e8;
+    border-top: 1px solid #ffcdd2;
+    text-align: center;
+}
+
+.eliminated-player {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.elimination-controls {
+    padding: 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+}
+
+.elimination-controls p {
+    margin: 0 0 15px 0;
+    font-weight: 500;
+    color: var(--norsys-text);
+}
+
+.elimination-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.no-matches, .no-team-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #ddd;
+}
+
+/* Styles pour les sections de phases */
+.phase-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.phase-header {
+    background: linear-gradient(135deg, var(--norsys-primary), var(--norsys-dark));
+    color: white;
+    padding: 25px 30px;
+    text-align: center;
+}
+
+.phase-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.phase-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+    font-style: italic;
+    padding: 40px 20px;
+}
+
+/* Styles pour les détails des équipes dans la sidebar */
+.team-details {
+    padding: 0;
+}
+
+.team-details-header {
+    position: relative;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+.team-details-header h3 {
+    color: var(--norsys-primary);
+    margin: 0;
+}
+
+.team-members-detailed {
+    margin-bottom: 20px;
+}
+
+.team-members-detailed h4 {
+    color: var(--norsys-dark);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.member-detailed {
+    padding: 8px 12px;
+    background: var(--norsys-light);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    color: var(--norsys-primary);
+    font-weight: 500;
+}
+
+.team-matches-progress h4 {
+    color: var(--norsys-dark);
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.round-details {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.round-title {
+    font-weight: 600;
+    color: var(--norsys-primary);
+    margin-bottom: 8px;
+}
+
+.status-completed {
+    color: var(--success-green);
+    font-weight: 600;
+}
+
+.status-pending {
+    color: var(--warning-orange);
+    font-weight: 600;
+}
+
+.eliminated-player {
+    color: var(--error-red);
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.team-winner-final {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.team-winner-final h4 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.winner-name {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Overlay pour sidebar - masqué car sidebar fixe */
+.sidebar-overlay {
+    display: none;
+}
+
+/* Header compact */
+.header-compact {
+    margin-top: 80px;
+    padding: 20px 0;
+}
+
+.tournament-status {
+    text-align: center;
+    background: var(--norsys-light);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.tournament-status h2 {
+    color: var(--norsys-primary);
+    margin-bottom: 15px;
+}
+
+.status-item {
+    text-align: center;
+}
+
+.status-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--norsys-primary);
+}
+
+.status-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--norsys-text);
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+/* Barre d'outils */
+.toolbar {
+    position: fixed;
+    top: 80px;
+    left: 320px;
+    right: 0;
+    background: var(--norsys-white);
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 998;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+}
+
+.toolbar-section {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.toolbar .btn {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    white-space: nowrap;
+}
+
+/* Ajustements pour le contenu principal */
+body {
+    padding-top: 0;
+}
+
+.container {
+    margin-top: 60px; /* Espace pour la toolbar */
+    padding-top: 0;
+    margin-left: 320px; /* Espace pour la sidebar */
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 15px;
+    }
+    
+    .navbar-title h1 {
+        font-size: 1.2rem;
+    }
+    
+    .sidebar {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .navbar-menu {
+        gap: 10px;
+    }
+    
+    .btn-outline, .btn-secondary {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+.card {
+    background: var(--norsys-white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #E0E0E0;
 }
 
 .container {

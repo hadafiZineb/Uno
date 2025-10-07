@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Syntax</title>
+</head>
+<body>
+    <script>
+        // Test de la partie problématique
+        function showTeamDetails(teamIndex) {
+            const content = document.getElementById('sidebarTeamsContent');
+            const team = window.tournamentOrganizer.teams[teamIndex];
+            const teamData = window.tournamentOrganizer.tournament && 
+                           window.tournamentOrganizer.tournament.phase1 && 
+                           window.tournamentOrganizer.tournament.phase1[teamIndex];
+
+            if (!team || !teamData) return;
+
+            let matchesHtml = '';
+            if (teamData.internalMatches) {
+                teamData.internalMatches.forEach((round, roundIndex) => {
+                    if (round.matches) {
+                        matchesHtml += `<h5>🎮 ${round.roundName || `Round ${roundIndex + 1}`}</h5>`;
+                        round.matches.forEach((match, matchIndex) => {
+                            const status = match.completed ? '✅' : '⏳';
+                            const winner = match.winner || 'En cours';
+                            matchesHtml += `
+                                <div class="match-summary ${match.completed ? 'completed' : ''}">
+                                    <span class="match-status">${status}</span>
+                                    <span class="match-info">Match ${matchIndex + 1}</span>
+                                    ${match.completed ? `<span class="match-winner">🏆 ${winner}</span>` : ''}
+                                </div>
+                            `;
+                        });
+                    }
+                });
+            }
+
+            let detailsHtml = `
+                <div class="team-details">
+                    <div class="team-details-header">
+                        <button class="btn btn-secondary" onclick="updateSidebarContent()" style="float: right; font-size: 0.8rem;">
+                            ← Retour
+                        </button>
+                        <h3>🏆 Équipe ${teamIndex + 1}</h3>
+                    </div>
+                    
+                    <div class="team-members-detailed">
+                        <h4>👥 Membres:</h4>
+                        ${(team.members || team).map(member => `
+                            <div class="member-detailed">${member}</div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="team-progress-detailed">
+                        <h4>📊 Avancement:</h4>
+                        ${teamData.completed ? 
+                            `<div class="final-winner">🏆 Vainqueur final: ${teamData.winner}</div>` : 
+                            matchesHtml || '<p>Aucun match commencé</p>'
+                        }
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = detailsHtml;
+        }
+        
+        console.log("Syntax test OK");
+    </script>
+</body>
+</html>

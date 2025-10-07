@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Tournoi UNO - Vue Participant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles spécifiques pour la vue participant */
+        .admin-only {
+            display: none !important;
+        }
+        .participant-view {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+        .participant-info {
+            background: var(--norsys-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .match-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .readonly-section {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="participant-view">
+    <div class="container">
+        <header class="header">
+            <div class="norsys-logo">
+                <svg width="200" height="60" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background rectangles with rounded corners -->
+                    <rect x="10" y="10" width="100" height="100" rx="15" fill="#000000"/>
+                    
+                    <!-- Colorful circular elements -->
+                    <circle cx="35" cy="35" r="18" fill="none" stroke="#00ff00" stroke-width="3"/>
+                    <circle cx="85" cy="35" r="18" fill="none" stroke="#ff6600" stroke-width="3"/>
+                    <circle cx="60" cy="60" r="18" fill="none" stroke="#0066ff" stroke-width="3"/>
+                    <circle cx="35" cy="85" r="18" fill="none" stroke="#ff0066" stroke-width="3"/>
+                    <circle cx="85" cy="85" r="18" fill="none" stroke="#ffff00" stroke-width="3"/>
+                    
+                    <!-- Central connecting lines -->
+                    <path d="M35,35 L85,35 L60,60 L35,85 L85,85 L60,60 Z" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+                    
+                    <!-- NORSYS text -->
+                    <text x="140" y="45" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#000000">norsys</text>
+                    
+                    <!-- AFRIQUE text -->
+                    <text x="140" y="75" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#666666" letter-spacing="2px">AFRIQUE</text>
+                </svg>
+            </div>
+            <h1 class="title">🎯 TOURNOI UNO - Vue Participant</h1>
+            <p class="subtitle">Campus Norsys Agadir - Centre d'Excellence Technologique</p>
+            <p class="campus-description">Suivez l'avancement du tournoi en temps réel</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Section d'information participant -->
+            <section class="participant-info">
+                <h2>👋 Bienvenue Participant !</h2>
+                <p>Cette vue vous permet de suivre l'avancement du tournoi sans pouvoir le modifier.</p>
+                <div class="user-setup" style="margin-top: 15px;">
+                    <label for="participantName" style="display: block; margin-bottom: 5px;">Votre nom:</label>
+                    <input type="text" id="participantName" placeholder="Entrez votre nom..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
+                    <button id="connectAsParticipant" class="btn btn-success" style="margin-left: 10px;">
+                        👁️ Se Connecter en Lecture
+                    </button>
+                </div>
+                <div id="participantStatus" style="display: none; margin-top: 15px;">
+                    <p style="color: var(--success-green); font-weight: 600;">✅ Connecté en mode lecture seule</p>
+                </div>
+            </section>
+
+            <!-- Section de saisie (masquée pour les participants) -->
+            <section class="input-section admin-only">
+                <div class="card">
+                    <h2>📋 Liste des Participants</h2>
+                    <textarea 
+                        id="participantInput" 
+                        readonly
+                        placeholder="Vue en lecture seule...">
+                    </textarea>
+                    <div class="participant-count">
+                        <span id="participantCounter">0 participants</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section des résultats (visible mais non modifiable) -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="card">
+                    <h2>🏆 Tournoi en Cours</h2>
+                    
+                    <div class="tournament-info" id="tournamentInfo">
+                        <!-- Tournament summary will be inserted here -->
+                    </div>
+
+                    <div class="teams-container readonly-section" id="teamsContainer">
+                        <!-- Teams will be inserted here -->
+                    </div>
+
+                    <div class="phase-container readonly-section" id="phaseContainer">
+                        <div class="team-matches-container" id="teamMatchesContainer">
+                            <!-- Internal team matches will be inserted here -->
+                        </div>
+                        
+                        <div class="winners-tournament-container" id="winnersTournamentContainer" style="display: none;">
+                            <!-- Winners tournament will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Boutons d'action masqués pour les participants -->
+                    <div class="button-group admin-only">
+                        <button id="saveTournament" class="btn btn-success">
+                            💾 Sauvegarder
+                        </button>
+                        <button id="exportTournament" class="btn btn-accent">
+                            📤 Exporter
+                        </button>
+                        <button id="printTournament" class="btn btn-accent">
+                            🖨️ Imprimer
+                        </button>
+                        <button id="newTournament" class="btn btn-secondary">
+                            🔄 Nouveau Tournoi
+                        </button>
+                    </div>
+
+                    <!-- Boutons visibles pour les participants -->
+                    <div class="button-group">
+                        <button id="refreshTournament" class="btn btn-primary">
+                            🔄 Actualiser
+                        </button>
+                        <button id="viewOrganizerMode" class="btn btn-accent">
+                            👑 Passer en Mode Organisateur
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Made with ❤️ by Norsys Campus Agadir | © 2025</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">
+                Vue Participant - Innovation • Formation • Excellence Technologique
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Configuration spécifique pour la vue participant
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser l'organisateur en mode participant
+            window.tournamentOrganizer = new UnoTournamentOrganizer();
+            window.tournamentOrganizer.setMode('participant');
+            
+            // Charger automatiquement un tournoi existant s'il y en a un
+            window.tournamentOrganizer.loadExistingTournament();
+            
+            // Gestion des événements spécifiques aux participants
+            document.getElementById('connectAsParticipant').addEventListener('click', function() {
+                const name = document.getElementById('participantName').value.trim();
+                if (!name) {
+                    alert('⚠️ Veuillez entrer votre nom !');
+                    return;
+                }
+                
+                // Simuler la connexion en mode lecture
+                document.getElementById('participantStatus').style.display = 'block';
+                document.getElementById('connectAsParticipant').style.display = 'none';
+                
+                // Activer la synchronisation
+                window.tournamentOrganizer.userName = name;
+                window.tournamentOrganizer.enableParticipantMode();
+            });
+            
+            document.getElementById('refreshTournament').addEventListener('click', function() {
+                window.tournamentOrganizer.syncWithServer();
+            });
+            
+            document.getElementById('viewOrganizerMode').addEventListener('click', function() {
+                if (confirm('🔐 Voulez-vous passer en mode organisateur ? Cela vous donnera accès à toutes les fonctions d\'édition.')) {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

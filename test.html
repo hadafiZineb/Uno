@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Script Debug</title>
+</head>
+<body>
+    <h1>Test de chargement du script - Debug</h1>
+    <div id="result">Chargement en cours...</div>
+    
+    <script>
+        console.log('1. Page chargée, script inline démarré');
+        
+        // Test 1: Charger le script et vérifier les erreurs
+        const script = document.createElement('script');
+        script.src = 'script.js';
+        script.onload = function() {
+            console.log('2. script.js chargé avec succès');
+            testClass();
+        };
+        script.onerror = function(error) {
+            console.error('2. Erreur lors du chargement de script.js:', error);
+            document.getElementById('result').innerHTML = '<p style="color: red;">❌ Erreur de chargement de script.js</p>';
+        };
+        document.head.appendChild(script);
+        
+        function testClass() {
+            const resultDiv = document.getElementById('result');
+            console.log('3. Test de la classe UnoTournamentOrganizer');
+            
+            try {
+                console.log('3a. Type of UnoTournamentOrganizer:', typeof UnoTournamentOrganizer);
+                
+                if (typeof UnoTournamentOrganizer !== 'undefined') {
+                    resultDiv.innerHTML = '<p style="color: green;">✅ UnoTournamentOrganizer trouvé</p>';
+                    console.log('4. Tentative de création d\'instance...');
+                    
+                    // Test d'instanciation simple
+                    const organizer = new UnoTournamentOrganizer();
+                    resultDiv.innerHTML += '<p style="color: green;">✅ Instance créée avec succès</p>';
+                    console.log('5. Instance créée:', organizer);
+                    
+                } else {
+                    resultDiv.innerHTML = '<p style="color: red;">❌ UnoTournamentOrganizer non défini</p>';
+                    console.log('4. UnoTournamentOrganizer non défini');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: red;">❌ Erreur: ' + error.message + '</p>';
+                console.error('4. Erreur détaillée:', error);
+            }
+        }
+    </script>
+</body>
+</html>

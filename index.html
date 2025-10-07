@@ -8,43 +8,104 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="norsys-logo">
-                <svg width="200" height="60" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Background rectangles with rounded corners -->
-                    <rect x="10" y="10" width="100" height="100" rx="15" fill="#000000"/>
-                    
-                    <!-- Colorful circular elements -->
-                    <circle cx="35" cy="35" r="18" fill="none" stroke="#00ff00" stroke-width="3"/>
-                    <circle cx="85" cy="35" r="18" fill="none" stroke="#ff6600" stroke-width="3"/>
-                    <circle cx="60" cy="60" r="18" fill="none" stroke="#0066ff" stroke-width="3"/>
-                    <circle cx="35" cy="85" r="18" fill="none" stroke="#ff0066" stroke-width="3"/>
-                    <circle cx="85" cy="85" r="18" fill="none" stroke="#ffff00" stroke-width="3"/>
-                    
-                    <!-- Central connecting lines -->
-                    <path d="M35,35 L85,35 L60,60 L35,85 L85,85 L60,60 Z" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
-                    
-                    <!-- NORSYS text -->
-                    <text x="140" y="45" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#000000">norsys</text>
-                    
-                    <!-- AFRIQUE text -->
-                    <text x="140" y="75" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#666666" letter-spacing="2px">AFRIQUE</text>
+    <!-- Navbar moderne -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div class="norsys-logo-mini">
+                <svg width="40" height="40" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="100" height="100" rx="15" fill="#2196F3"/>
+                    <circle cx="35" cy="35" r="15" fill="none" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="85" cy="35" r="15" fill="none" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="60" cy="60" r="15" fill="none" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="35" cy="85" r="15" fill="none" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="85" cy="85" r="15" fill="none" stroke="#ffffff" stroke-width="2"/>
                 </svg>
             </div>
-            <h1 class="title">🎯 TOURNOI UNO</h1>
-            <p class="subtitle">Campus Norsys Agadir - Centre d'Excellence Technologique</p>
-            <p class="campus-description">Formation • Innovation • Développement IT • Écosystème Tech Marocain</p>
+            <div class="navbar-title">
+                <h1>🎯 TOURNOI UNO</h1>
+                <span>Norsys Campus Agadir</span>
+            </div>
+        </div>
+        
+        <div class="navbar-menu">
+            <button onclick="window.location.href='participant.html'" class="btn btn-secondary" style="display: none;" id="navModeSwitch">
+                👁️ Vue Participant
+            </button>
+        </div>
+    </nav>
+
+    <!-- Barre d'outils avec les boutons principaux -->
+    <div class="toolbar" id="mainToolbar" style="display: none;">
+        <div class="toolbar-section">
+            <button id="saveTournament" class="btn btn-success">
+                💾 Sauvegarder
+            </button>
+            <button id="exportTournament" class="btn btn-primary">
+                📤 Exporter
+            </button>
+            <button id="downloadJSON" class="btn btn-accent">
+                📁 Télécharger JSON
+            </button>
+        </div>
+        <div class="toolbar-section">
+            <button id="exportPowerPoint" class="btn btn-warning">
+                🎨 Export PowerPoint
+            </button>
+            <button id="printTournament" class="btn btn-info">
+                🖨️ Imprimer
+            </button>
+        </div>
+        <div class="toolbar-section">
+            <button id="viewSchema" class="btn btn-info" onclick="window.open('schema.html', '_blank')">
+                📊 Schéma du Tournoi
+            </button>
+            <button id="newTournament" class="btn btn-danger">
+                🆕 Nouveau Tournoi
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar pour les équipes - toujours visible -->
+    <div class="sidebar active" id="teamsSidebar">
+        <div class="sidebar-header">
+            <h3>🏆 Équipes</h3>
+        </div>
+        <div class="sidebar-content" id="sidebarTeamsContent">
+            <p class="sidebar-placeholder">Aucune équipe créée</p>
+        </div>
+        <div class="sidebar-footer">
+            <button class="btn btn-info" onclick="window.open('schema.html', '_blank')" style="width: 100%; margin-bottom: 10px;">
+                📊 Voir le Schéma
+            </button>
+            <button class="btn btn-primary" onclick="updateSidebarContent()" style="width: 100%;">
+                🔄 Actualiser
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay pour la sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <header class="header-compact" style="display: none;margin-top:100px" id="compactHeader">
+            <div class="tournament-status">
+                <h2>📊 Statut du Tournoi</h2>
+                <div id="tournamentStatusInfo"></div>
+            </div>
         </header>
 
-        <main class="main-content">
-            <section class="input-section">
+        <main class="main-content" id="mainContent">
+            <section class="input-section" id="organizerSection">
                 <div class="card">
-                    <h2>📋 Liste des Participants</h2>
-                    <textarea 
-                        id="participantInput" 
-                        placeholder="Entrez les noms des participants, un par ligne ou séparés par des virgules...&#10;Exemple:&#10;Marie&#10;Jean&#10;Sophie&#10;Pierre&#10;...">
-                    </textarea>
+                    <div class="card-header collapsible" onclick="toggleInputSection()">
+                        <h2>📋 Liste des Participants</h2>
+                        <span class="collapse-icon" id="inputCollapseIcon">➖</span>
+                    </div>
+                    <div class="card-content" id="inputCardContent">
+                        <textarea 
+                            id="participantInput" 
+                            placeholder="Entrez les noms des participants, un par ligne ou séparés par des virgules...&#10;Exemple:&#10;Marie&#10;Jean&#10;Sophie&#10;Pierre&#10;...">
+                        </textarea>
                     <div class="button-group">
                         <button id="generateTournament" class="btn btn-primary">
                             🚀 Générer le Tournoi
@@ -61,32 +122,9 @@
                     </div>
                     <input type="file" id="fileInput" accept=".json" style="display: none;">
                     
-                    <div class="collaboration-section" style="margin-top: 20px; padding: 20px; background: var(--norsys-light); border-radius: 8px;">
-                        <h3 style="color: var(--norsys-text); margin-bottom: 15px;">👥 Mode Collaboration</h3>
-                        <div class="user-setup" style="margin-bottom: 15px;">
-                            <label for="userName" style="color: var(--norsys-text); display: block; margin-bottom: 5px;">Votre nom:</label>
-                            <input type="text" id="userName" placeholder="Entrez votre nom..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
-                            <button id="enableCollaboration" class="btn btn-success" style="margin-left: 10px;">
-                                🤝 Activer Collaboration
-                            </button>
-                        </div>
-                        <div id="collaborationStatus" style="display: none;">
-                            <p style="color: var(--success-green); font-weight: 600;">✅ Mode collaboration activé</p>
-                            <div id="activeUsers" style="margin-top: 10px;"></div>
-                        </div>
-                        
-                        <div class="sharing-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-                            <h4 style="color: var(--norsys-text); margin-bottom: 10px;">🌐 Partage Réseau</h4>
-                            <p style="color: var(--norsys-text); margin-bottom: 10px; font-size: 0.9rem;">
-                                Pour collaborer en temps réel, tous les utilisateurs doivent accéder via la même URL
-                            </p>
-                            <button id="showNetworkInstructions" class="btn btn-primary" style="margin-top: 10px;">
-                                📡 Instructions Serveur Local
-                            </button>
-                        </div>
-                    </div>
                     <div class="participant-count">
                         <span id="participantCounter">0 participants</span>
+                    </div>
                     </div>
                 </div>
             </section>
@@ -94,47 +132,48 @@
             <section class="results-section" id="resultsSection" style="display: none;">
                 <div class="card">
                     <h2>🏆 Tournoi Généré</h2>
-                    
-                    <div class="tournament-info" id="tournamentInfo">
-                        <!-- Tournament summary will be inserted here -->
-                    </div>
+                  
 
-                    <div class="teams-container" id="teamsContainer">
-                        <!-- Teams will be inserted here -->
+                    <!-- Ancien conteneur scroll - maintenant masqué -->
+                    <div class="teams-container" id="teamsContainer" style="display: none;">
+                        <!-- Teams will be inserted here (fallback) -->
                     </div>
 
                     <div class="phase-container" id="phaseContainer">
-                        <div class="team-matches-container" id="teamMatchesContainer">
-                            <!-- Internal team matches will be inserted here -->
+                        <!-- PHASE 1: Élimination par équipes avec navigation -->
+                        <div class="phase-section">
+                            <div class="phase-header">
+                                <h3>🎯 PHASE 1: Élimination par Équipes</h3>
+                                <p>Chaque équipe de 4 joueurs s'affronte en interne pour déterminer son vainqueur</p>
+                            </div>
+                            
+                            <!-- Navigation horizontale des équipes -->
+                            <div class="teams-navigation" id="teamsNavigation" style="display: none;">
+                                <div class="nav-header">
+                                    <button class="nav-btn" id="prevTeamBtn" onclick="navigateTeam(-1)">⬅️</button>
+                                    <h3 id="currentTeamTitle">Équipe 1</h3>
+                                    <button class="nav-btn" id="nextTeamBtn" onclick="navigateTeam(1)">➡️</button>
+                                </div>
+                                <div class="team-display" id="currentTeamDisplay">
+                                    <!-- Current team will be displayed here -->
+                                </div>
+                                <div class="team-pagination">
+                                    <span id="teamPagination">1 / 1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="team-matches-container" id="teamMatchesContainer" style="display: none;">
+                            <!-- Internal team matches will be inserted here (ancien affichage) -->
                         </div>
                         
+                        <!-- PHASE 2: Tournoi des vainqueurs -->
                         <div class="winners-tournament-container" id="winnersTournamentContainer" style="display: none;">
                             <!-- Winners tournament will be inserted here -->
                         </div>
                     </div>
 
-                    <div class="button-group">
-                        <button id="saveTournament" class="btn btn-success">
-                            💾 Sauvegarder
-                        </button>
-                        <button id="exportTournament" class="btn btn-accent">
-                            📤 Exporter
-                        </button>
-                        <button id="exportPowerPointBtn" class="btn powerpoint-btn">
-                            <span class="btn-content">
-                                <i class="icon">🎯</i>
-                                <span class="btn-text">Export PowerPoint</span>
-                                <span class="btn-animation"></span>
-                            </span>
-                            <span class="btn-shine"></span>
-                        </button>
-                        <button id="printTournament" class="btn btn-accent">
-                            🖨️ Imprimer
-                        </button>
-                        <button id="newTournament" class="btn btn-secondary">
-                            🔄 Nouveau Tournoi
-                        </button>
-                    </div>
+                   
                 </div>
             </section>
         </main>
@@ -147,6 +186,458 @@
         </footer>
     </div>
 
+    <!-- Test avec script simplifié -->
     <script src="script.js"></script>
+    
+    <script>
+        // Simple initialisation après chargement du DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM chargé, vérification de UnoTournamentOrganizer...');
+            
+            // Fonction d'initialisation avec retry
+            function tryInitialize(attempts = 0) {
+                if (attempts > 50) {
+                    console.error('❌ Impossible de charger UnoTournamentOrganizer après 50 tentatives');
+                    alert('Erreur: Impossible de charger l\'application. Veuillez actualiser la page.');
+                    return;
+                }
+                
+                if (typeof UnoTournamentOrganizer === 'undefined') {
+                    console.log(`Tentative ${attempts + 1}: UnoTournamentOrganizer non trouvé, retry...`);
+                    setTimeout(() => tryInitialize(attempts + 1), 100);
+                    return;
+                }
+                
+                try {
+                    console.log('✅ UnoTournamentOrganizer trouvé, initialisation...');
+                    
+                    // Afficher l'interface
+                    document.getElementById('mainContent').style.display = 'block';
+                    const navModeSwitch = document.getElementById('navModeSwitch');
+                    if (navModeSwitch) navModeSwitch.style.display = 'block';
+                    document.getElementById('compactHeader').style.display = 'block';
+                    document.getElementById('mainToolbar').style.display = 'flex';
+                    
+                    // Initialiser
+                    window.tournamentOrganizer = new UnoTournamentOrganizer();
+                    window.tournamentOrganizer.setMode('organizer');
+                    
+                    console.log('✅ Application initialisée avec succès');
+                    
+                    // Ajouter le téléchargement JSON
+                    const downloadBtn = document.getElementById('downloadJSON');
+                    if (downloadBtn) {
+                        downloadBtn.addEventListener('click', function() {
+                            if (window.tournamentOrganizer && window.tournamentOrganizer.tournament) {
+                                const data = {
+                                    participants: window.tournamentOrganizer.participants,
+                                    teams: window.tournamentOrganizer.teams,
+                                    tournament: window.tournamentOrganizer.tournament,
+                                    substitutes: window.tournamentOrganizer.substitutes || [],
+                                    timestamp: new Date().toISOString(),
+                                    version: '2.0'
+                                };
+                                window.tournamentOrganizer.downloadJSON(data, 'tournoi_uno_' + new Date().toISOString().split('T')[0] + '.json');
+                                window.tournamentOrganizer.showNotification('📥 JSON téléchargé !', 'success');
+                            } else {
+                                alert('⚠️ Aucun tournoi à télécharger !');
+                            }
+                        });
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erreur lors de l\'initialisation:', error);
+                    setTimeout(() => tryInitialize(attempts + 1), 500);
+                }
+            }
+            
+            // Démarrer l'initialisation
+            tryInitialize();
+        });
+
+        // Fonction pour toggle la sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('teamsSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const icon = document.getElementById('sidebarToggleIcon');
+            
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                icon.textContent = '📋';
+            } else {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                icon.textContent = '✖️';
+                // Mettre à jour le contenu de la sidebar
+                updateSidebarContent();
+            }
+        }
+
+        // Fonction pour mettre à jour le contenu de la sidebar
+        function updateSidebarContent() {
+            const content = document.getElementById('sidebarTeamsContent');
+            if (window.tournamentOrganizer && window.tournamentOrganizer.teams && window.tournamentOrganizer.teams.length > 0) {
+                let html = '';
+                window.tournamentOrganizer.teams.forEach((team, index) => {
+                    const teamNumber = index + 1;
+                    const teamData = window.tournamentOrganizer.tournament && 
+                                   window.tournamentOrganizer.tournament.phase1 && 
+                                   window.tournamentOrganizer.tournament.phase1[index];
+                    
+                    let status = '⏳';
+                    let progressInfo = '';
+                    let winner = '';
+                    
+                    if (teamData) {
+                        if (teamData.completed) {
+                            status = '✅';
+                            winner = teamData.winner || 'Inconnu';
+                            progressInfo = `<div class="team-winner">🏆 Vainqueur: ${winner}</div>`;
+                        } else {
+                            // Compter les matchs terminés
+                            let completedMatches = 0;
+                            let totalMatches = 0;
+                            if (teamData.internalMatches) {
+                                teamData.internalMatches.forEach(round => {
+                                    if (round.matches) {
+                                        totalMatches += round.matches.length;
+                                        completedMatches += round.matches.filter(match => match.completed).length;
+                                    }
+                                });
+                            }
+                            progressInfo = `<div class="team-progress">${completedMatches}/${totalMatches} matchs terminés</div>`;
+                        }
+                    }
+                    
+                    html += `
+                        <div class="sidebar-team" onclick="scrollToTeam(${index})">
+                            <div class="sidebar-team-header">
+                                <span class="team-status">${status}</span>
+                                <strong>Équipe ${teamNumber}</strong>
+                            </div>
+                            <div class="sidebar-team-members">
+                                ${team.members ? team.members.map(member => `<span class="member-name">${member}</span>`).join('') : 
+                                  team.map(member => `<span class="member-name">${member}</span>`).join('')}
+                            </div>
+                            ${progressInfo}
+                        </div>
+                    `;
+                });
+                content.innerHTML = html;
+            } else {
+                content.innerHTML = '<p class="sidebar-placeholder">Aucune équipe créée</p>';
+            }
+        }
+
+        // Fonction pour scroller vers une équipe et afficher ses détails
+        function scrollToTeam(teamIndex) {
+            const teamElement = document.querySelector(`[data-team-index="${teamIndex}"]`);
+            if (teamElement) {
+                teamElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                teamElement.style.boxShadow = '0 0 20px rgba(33, 150, 243, 0.5)';
+                setTimeout(() => {
+                    teamElement.style.boxShadow = '';
+                }, 2000);
+            }
+            // Ne pas fermer la sidebar, permettre de voir les détails
+            showTeamDetails(teamIndex);
+        }
+
+        // Fonction pour afficher les détails d'une équipe dans la sidebar
+        function showTeamDetails(teamIndex) {
+            const content = document.getElementById('sidebarTeamsContent');
+            const team = window.tournamentOrganizer.teams[teamIndex];
+            const teamData = window.tournamentOrganizer.tournament && 
+                           window.tournamentOrganizer.tournament.phase1 && 
+                           window.tournamentOrganizer.tournament.phase1[teamIndex];
+
+            if (!team || !teamData) return;
+
+            let matchesHtml = '';
+            if (teamData.internalMatches) {
+                teamData.internalMatches.forEach((round, roundIndex) => {
+                    if (round.matches) {
+                        matchesHtml += `<h5>🎮 ${round.roundName || 'Round ' + (roundIndex + 1)}</h5>`;
+                        round.matches.forEach((match, matchIndex) => {
+                            const status = match.completed ? '✅' : '⏳';
+                            const winner = match.winner || 'En cours';
+                            matchesHtml += `
+                                <div class="match-summary ${match.completed ? 'completed' : ''}">
+                                    <span class="match-status">${status}</span>
+                                    <span class="match-info">Match ${matchIndex + 1}</span>
+                                    ${match.completed ? `<span class="match-winner">🏆 ${winner}</span>` : ''}
+                                </div>
+                            `;
+                        });
+                    }
+                });
+            }
+
+            let detailsHtml = `
+                <div class="team-details">
+                    <div class="team-details-header">
+                        <button class="btn btn-secondary" onclick="updateSidebarContent()" style="float: right; font-size: 0.8rem;">
+                            ← Retour
+                        </button>
+                        <h3>🏆 Équipe ${teamIndex + 1}</h3>
+                    </div>
+                    
+                    <div class="team-members-detailed">
+                        <h4>👥 Membres:</h4>
+                        ${(team.members || team).map(member => `
+                            <div class="member-detailed">${member}</div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="team-progress-detailed">
+                        <h4>📊 Avancement:</h4>
+                        ${teamData.completed ? 
+                            `<div class="final-winner">🏆 Vainqueur final: ${teamData.winner}</div>` : 
+                            matchesHtml || '<p>Aucun match commencé</p>'
+                        }
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = detailsHtml;
+        }
+
+        // Variables globales pour la navigation
+        let currentTeamIndex = 0;
+        let totalTeams = 0;
+
+        // Fonction pour basculer la section de saisie
+        function toggleInputSection() {
+            const content = document.getElementById('inputCardContent');
+            const icon = document.getElementById('inputCollapseIcon');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.textContent = '➖';
+            } else {
+                content.classList.add('collapsed');
+                icon.textContent = '➕';
+            }
+        }
+
+        // Navigation entre les équipes
+        function navigateTeam(direction) {
+            currentTeamIndex += direction;
+            
+            // Gérer les limites
+            if (currentTeamIndex < 0) currentTeamIndex = 0;
+            if (currentTeamIndex >= totalTeams) currentTeamIndex = totalTeams - 1;
+            
+            displayCurrentTeam();
+            updateNavigationButtons();
+        }
+
+        function displayCurrentTeam() {
+            if (!window.tournamentOrganizer || !window.tournamentOrganizer.teams) return;
+            
+            const team = window.tournamentOrganizer.teams[currentTeamIndex];
+            const teamData = window.tournamentOrganizer.tournament && 
+                           window.tournamentOrganizer.tournament.phase1 && 
+                           window.tournamentOrganizer.tournament.phase1[currentTeamIndex];
+            
+            document.getElementById('currentTeamTitle').textContent = `Équipe ${currentTeamIndex + 1}`;
+            document.getElementById('teamPagination').textContent = `${currentTeamIndex + 1} / ${totalTeams}`;
+            
+            const display = document.getElementById('currentTeamDisplay');
+            if (team && teamData) {
+                // Afficher les membres
+                let membersHtml = `
+                    <div class="team-members-section">
+                        <h4>👥 Membres de l'Équipe ${currentTeamIndex + 1}:</h4>
+                        <div class="members-list">
+                            ${(team.members || team).map(member => 
+                                `<div class="member-pill">${member}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Afficher le vainqueur final si terminé
+                let winnerHtml = '';
+                if (teamData.completed && teamData.winner) {
+                    winnerHtml = `
+                        <div class="final-winner-display">
+                            🏆 Vainqueur de l'équipe: <strong>${teamData.winner}</strong>
+                        </div>
+                    `;
+                }
+
+                // Afficher les phases d'élimination
+                let eliminationHtml = '';
+                if (teamData.internalMatches && teamData.internalMatches.length > 0) {
+                    eliminationHtml = '<div class="elimination-phases">';
+                    
+                    teamData.internalMatches.forEach((round, roundIndex) => {
+                        const isCompleted = round.completed;
+                        const remainingPlayers = round.remainingPlayers || (team.members || team).length - roundIndex;
+                        const targetPlayers = remainingPlayers - 1;
+                        
+                        eliminationHtml += `
+                            <div class="elimination-round ${isCompleted ? 'completed' : 'pending'}">
+                                <div class="round-header">
+                                    <span class="round-icon">${isCompleted ? '✅' : '⏳'}</span>
+                                    <h5>${round.roundName || `${roundIndex + 1}ème Élimination`}</h5>
+                                    <span class="round-progress">(${remainingPlayers}→${targetPlayers})</span>
+                                </div>
+                                
+                                <div class="players-status">
+                                    ${(team.members || team).map(member => {
+                                        let playerStatus = 'active';
+                                        let statusIcon = '🎮';
+                                        let statusText = 'Qualifié';
+                                        
+                                        if (round.eliminated === member) {
+                                            playerStatus = 'eliminated';
+                                            statusIcon = '❌';
+                                            statusText = 'Éliminé';
+                                        } else if (roundIndex === 0 || !teamData.internalMatches[roundIndex - 1]?.eliminated || 
+                                                 teamData.internalMatches[roundIndex - 1].eliminated !== member) {
+                                            if (isCompleted) {
+                                                statusIcon = '✅';
+                                                statusText = 'Qualifié';
+                                            }
+                                        } else {
+                                            playerStatus = 'previously-eliminated';
+                                            statusIcon = '⚪';
+                                            statusText = 'Déjà éliminé';
+                                        }
+                                        
+                                        return `
+                                            <div class="player-status ${playerStatus}">
+                                                <span class="player-icon">${statusIcon}</span>
+                                                <span class="player-name">${member}</span>
+                                                <span class="player-label">${statusText}</span>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                
+                                ${round.eliminated ? `
+                                    <div class="elimination-result">
+                                        <span class="eliminated-player">❌ ${round.eliminated} a été éliminé(e)</span>
+                                    </div>
+                                ` : ''}
+                                
+                                ${!isCompleted && roundIndex === teamData.internalMatches.findIndex(r => !r.completed) ? `
+                                    <div class="elimination-controls">
+                                        <p>Sélectionnez le joueur à éliminer:</p>
+                                        <div class="elimination-buttons">
+                                            ${(team.members || team).filter(member => 
+                                                !teamData.internalMatches.slice(0, roundIndex).some(prevRound => prevRound.eliminated === member)
+                                            ).map(member => `
+                                                <button class="btn btn-danger btn-sm" onclick="eliminatePlayer('${round.id}', '${member}')">
+                                                    Éliminer ${member}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                        ${round.eliminated ? `
+                                            <button class="btn btn-success" onclick="confirmElimination('${round.id}')" style="margin-top: 10px;">
+                                                ✅ Confirmer l'élimination
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    eliminationHtml += '</div>';
+                }
+
+                display.innerHTML = `
+                    <div class="team-elimination-display">
+                        ${membersHtml}
+                        ${winnerHtml}
+                        ${eliminationHtml || '<div class="no-matches">Aucun match d\'élimination généré</div>'}
+                    </div>
+                `;
+            } else {
+                display.innerHTML = `
+                    <div class="no-team-data">
+                        <h4>Équipe ${currentTeamIndex + 1}</h4>
+                        <p>Aucune donnée disponible pour cette équipe</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevTeamBtn').disabled = currentTeamIndex === 0;
+            document.getElementById('nextTeamBtn').disabled = currentTeamIndex === totalTeams - 1;
+        }
+
+        function initializeTeamNavigation() {
+            if (!window.tournamentOrganizer || !window.tournamentOrganizer.teams) return;
+            
+            totalTeams = window.tournamentOrganizer.teams.length;
+            currentTeamIndex = 0;
+            
+            if (totalTeams > 0) {
+                // Masquer l'ancien conteneur et afficher la navigation
+                document.getElementById('teamsContainer').style.display = 'none';
+                document.getElementById('teamsNavigation').style.display = 'block';
+                displayCurrentTeam();
+                updateNavigationButtons();
+            }
+        }
+
+        // Fonctions globales pour l'élimination
+        function eliminatePlayer(roundId, player) {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.selectPlayerToEliminate(roundId, player);
+            }
+        }
+
+        function confirmElimination(roundId) {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.confirmElimination(roundId);
+            }
+        }
+
+        function selectFinalWinner(matchId, winner) {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.selectFinalWinner(matchId, winner);
+            }
+        }
+
+        function confirmFinalMatch(matchId) {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.confirmFinalMatch(matchId);
+            }
+        }
+
+        function startPhase2() {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.startPhase2();
+            }
+        }
+
+        function resetTournament() {
+            if (window.tournamentOrganizer) {
+                window.tournamentOrganizer.resetTournament();
+            }
+        }
+
+        // Styles pour les cartes de rôle au survol
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleCards = document.querySelectorAll('.role-card');
+            roleCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -4,39 +4,268 @@ class UnoTournamentOrganizer {
         this.participants = [];
         this.teams = [];
         this.tournament = null;
+        this.mode = 'organizer'; // 'organizer' ou 'participant'
+        this.isReadOnly = false;
+        this.autoSaveEnabled = true;
+        this.jsonFileName = 'tournament_uno_norsys.json';
         this.initializeEventListeners();
         this.updateParticipantCounter();
+        this.loadFromJSON(); // Charger automatiquement au démarrage
+    }
+
+    // Définir le mode de fonctionnement
+    setMode(mode) {
+        this.mode = mode;
+        this.isReadOnly = (mode === 'participant');
+        
+        if (this.isReadOnly) {
+            this.enableReadOnlyMode();
+        }
+        
+        console.log(`Mode défini: ${mode}, Lecture seule: ${this.isReadOnly}`);
+    }
+
+    // Activer le mode lecture seule
+    enableReadOnlyMode() {
+        // Désactiver tous les boutons d'action
+        const actionButtons = document.querySelectorAll('.btn:not(#refreshTournament):not(#viewOrganizerMode)');
+        actionButtons.forEach(btn => {
+            if (!btn.id.includes('refresh') && !btn.id.includes('view') && !btn.id.includes('print')) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            }
+        });
+
+        // Rendre les zones de saisie en lecture seule
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            if (!input.id.includes('participant') && !input.id.includes('refresh')) {
+                input.readOnly = true;
+                input.style.backgroundColor = '#f8f9fa';
+            }
+        });
+
+        // Désactiver les clics sur les matchs
+        document.addEventListener('click', this.preventEditActions.bind(this), true);
+    }
+
+    // Empêcher les actions d'édition en mode participant
+    preventEditActions(event) {
+        if (this.isReadOnly) {
+            const target = event.target;
+            if (target.classList.contains('match-card') || 
+                target.classList.contains('team-member') || 
+                target.closest('.match-card') ||
+                target.closest('.elimination-controls')) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.showNotification('🔒 Action non autorisée en mode participant', 'warning');
+                return false;
+            }
+        }
+    }
+
+    // Mode participant avec synchronisation
+    enableParticipantMode() {
+        this.collaborationEnabled = true;
+        this.startSyncLoop();
+        this.loadExistingTournament();
+        this.showNotification('👁️ Mode participant activé - Synchronisation en cours...', 'info');
+    }
+
+    // Charger un tournoi existant
+    loadExistingTournament() {
+        // Tenter de charger depuis localStorage ou serveur
+        const savedData = localStorage.getItem('norsys_uno_tournament');
+        if (savedData) {
+            try {
+                const tournamentData = JSON.parse(savedData);
+                if (tournamentData.version) {
+                    // Restaurer les données du tournoi
+                    this.participants = tournamentData.participants || [];
+                    this.teams = tournamentData.teams || [];
+                    this.tournament = tournamentData.tournament;
+                    this.substitutes = tournamentData.substitutes || [];
+
+                    // Afficher le tournoi
+                    if (this.tournament) {
+                        this.displayTournament();
+                        this.showNotification('✅ Tournoi chargé en mode participant', 'success');
+                    } else {
+                        this.showNotification('ℹ️ Aucun tournoi en cours - En attente...', 'info');
+                    }
+                } else {
+                    this.showNotification('ℹ️ Aucun tournoi sauvegardé trouvé', 'info');
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                this.showNotification('⚠️ Erreur lors du chargement du tournoi', 'warning');
+            }
+        } else {
+            this.showNotification('ℹ️ Aucun tournoi en cours - En attente...', 'info');
+        }
+        
+        // Démarrer la synchronisation périodique
+        if (this.isReadOnly && !this.syncInterval) {
+            this.syncInterval = setInterval(() => {
+                this.syncWithServer();
+            }, 3000); // Sync toutes les 3 secondes en mode participant
+        }
+    }
+
+    // Synchronisation avec le serveur (simulation)
+    syncWithServer() {
+        // En mode réel, cela ferait appel à une API
+        const savedData = localStorage.getItem('norsys_uno_tournament');
+        if (savedData) {
+            try {
+                const tournamentData = JSON.parse(savedData);
+                if (tournamentData.lastModified > this.lastSyncTime) {
+                    this.handleExternalChanges(tournamentData);
+                }
+            } catch (error) {
+                console.log('Erreur de synchronisation:', error);
+            }
+        }
+    }
+
+    // Sauvegarde automatique en JSON
+    autoSaveToJSON() {
+        if (!this.autoSaveEnabled) return;
+        
+        const tournamentData = {
+            participants: this.participants,
+            teams: this.teams,
+            tournament: this.tournament,
+            substitutes: this.substitutes || [],
+            timestamp: new Date().toISOString(),
+            lastModified: Date.now(),
+            version: '2.0',
+            mode: this.mode
+        };
+
+        // Sauvegarder dans localStorage
+        localStorage.setItem('norsys_uno_tournament', JSON.stringify(tournamentData));
+        
+        // Sauvegarder aussi dans sessionStorage pour persistance
+        sessionStorage.setItem('norsys_uno_backup', JSON.stringify(tournamentData));
+        
+        console.log('🔄 Auto-sauvegarde effectuée:', new Date().toLocaleTimeString());
+        
+        // Afficher un indicateur de sauvegarde
+        this.showSaveIndicator();
+    }
+
+    // Indicateur visuel de sauvegarde
+    showSaveIndicator() {
+        const indicator = document.createElement('div');
+        indicator.innerHTML = '� Sauvegardé';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--success-green);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        
+        document.body.appendChild(indicator);
+        
+        // Animation d'apparition et disparition
+        setTimeout(() => indicator.style.opacity = '1', 10);
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+            setTimeout(() => indicator.remove(), 300);
+        }, 1500);
+    }
+
+    // Charger depuis JSON
+    loadFromJSON() {
+        const savedData = localStorage.getItem('norsys_uno_tournament');
+        if (savedData) {
+            try {
+                const tournamentData = JSON.parse(savedData);
+                if (tournamentData.version) {
+                    this.participants = tournamentData.participants || [];
+                    this.teams = tournamentData.teams || [];
+                    this.tournament = tournamentData.tournament;
+                    this.substitutes = tournamentData.substitutes || [];
+
+                    // Mettre à jour l'interface si des données existent
+                    if (this.participants.length > 0) {
+                        document.getElementById('participantInput').value = this.participants.join('\n');
+                        this.updateParticipantCounter();
+                    }
+
+                    if (this.tournament) {
+                        this.displayTournament();
+                        this.showNotification('✅ Tournoi restauré automatiquement', 'success');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+            }
+        }
+    }
+
+    // Télécharger un fichier JSON
+    downloadJSON(data, filename) {
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        // Création d'un lien de téléchargement invisible
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = filename;
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(link.href);
     }
 
     initializeEventListeners() {
+        // Éléments obligatoires
         const participantInput = document.getElementById('participantInput');
         const generateBtn = document.getElementById('generateTournament');
         const clearBtn = document.getElementById('clearInput');
+        const loadTournamentBtn = document.getElementById('loadTournament');
+        const importTournamentBtn = document.getElementById('importTournament');
+        const fileInput = document.getElementById('fileInput');
+
+        // Éléments optionnels
         const printBtn = document.getElementById('printTournament');
         const newTournamentBtn = document.getElementById('newTournament');
         const saveTournamentBtn = document.getElementById('saveTournament');
-        const loadTournamentBtn = document.getElementById('loadTournament');
         const exportTournamentBtn = document.getElementById('exportTournament');
-        const importTournamentBtn = document.getElementById('importTournament');
-        const fileInput = document.getElementById('fileInput');
         const showNetworkBtn = document.getElementById('showNetworkInstructions');
         const enableCollabBtn = document.getElementById('enableCollaboration');
         const userNameInput = document.getElementById('userName');
         const exportPowerPointBtn = document.getElementById('exportPowerPointBtn');
 
-        participantInput.addEventListener('input', () => this.updateParticipantCounter());
-        generateBtn.addEventListener('click', () => this.generateTournament());
-        clearBtn.addEventListener('click', () => this.clearInput());
-        printBtn.addEventListener('click', () => this.printTournament());
-        newTournamentBtn.addEventListener('click', () => this.newTournament());
-        saveTournamentBtn.addEventListener('click', () => this.saveTournament());
-        loadTournamentBtn.addEventListener('click', () => this.loadTournament());
-        exportTournamentBtn.addEventListener('click', () => this.exportTournament());
-        exportPowerPointBtn.addEventListener('click', () => this.exportPowerPoint());
-        importTournamentBtn.addEventListener('click', () => this.importTournament());
-        fileInput.addEventListener('change', (e) => this.handleFileImport(e));
-        showNetworkBtn.addEventListener('click', () => this.showNetworkInstructions());
-        enableCollabBtn.addEventListener('click', () => this.enableCollaboration());
+        // Event listeners pour les éléments obligatoires
+        if (participantInput) participantInput.addEventListener('input', () => this.updateParticipantCounter());
+        if (generateBtn) generateBtn.addEventListener('click', () => this.generateTournament());
+        if (clearBtn) clearBtn.addEventListener('click', () => this.clearInput());
+        if (loadTournamentBtn) loadTournamentBtn.addEventListener('click', () => this.loadTournament());
+        if (importTournamentBtn) importTournamentBtn.addEventListener('click', () => this.importTournament());
+        if (fileInput) fileInput.addEventListener('change', (e) => this.handleFileImport(e));
+
+        // Event listeners pour les éléments optionnels
+        if (printBtn) printBtn.addEventListener('click', () => this.printTournament());
+        if (newTournamentBtn) newTournamentBtn.addEventListener('click', () => this.newTournament());
+        if (saveTournamentBtn) saveTournamentBtn.addEventListener('click', () => this.saveTournament());
+        if (exportTournamentBtn) exportTournamentBtn.addEventListener('click', () => this.exportTournament());
+        if (exportPowerPointBtn) exportPowerPointBtn.addEventListener('click', () => this.exportPowerPoint());
+        if (showNetworkBtn) showNetworkBtn.addEventListener('click', () => this.showNetworkInstructions());
+        if (enableCollabBtn) enableCollabBtn.addEventListener('click', () => this.enableCollaboration());
 
         // Collaboration setup
         this.collaborationEnabled = false;
@@ -95,16 +324,12 @@ class UnoTournamentOrganizer {
     createTeams(participants) {
         const shuffled = this.shuffleArray(participants);
         const teams = [];
-        const teamNames = [
-            'Équipe Rouge 🔴', 'Équipe Bleue 🔵', 'Équipe Verte 🟢', 'Équipe Jaune 🟡',
-            'Équipe Violette 🟣', 'Équipe Orange 🟠', 'Équipe Rose 🌸', 'Équipe Turquoise 🟦'
-        ];
 
         for (let i = 0; i < shuffled.length; i += 4) {
             const teamMembers = shuffled.slice(i, i + 4);
             if (teamMembers.length === 4) {
                 teams.push({
-                    name: teamNames[teams.length] || `Équipe ${teams.length + 1}`,
+                    name: `Équipe ${teams.length + 1}`,
                     members: teamMembers,
                     id: teams.length + 1
                 });
@@ -269,11 +494,13 @@ class UnoTournamentOrganizer {
         // Auto-save the new tournament
         this.autoSaveEnabled = true;
         this.autoSave();
+        
+        // Sauvegarder explicitement pour le schéma
+        this.saveForSchema();
     }
 
     displayTournament() {
         const resultsSection = document.getElementById('resultsSection');
-        const tournamentInfo = document.getElementById('tournamentInfo');
         const teamsContainer = document.getElementById('teamsContainer');
         const bracketsContainer = document.getElementById('bracketsContainer');
 
@@ -286,15 +513,10 @@ class UnoTournamentOrganizer {
         const activeTeams = this.teams.length;
         const substitutes = this.substitutes ? this.substitutes.length : 0;
 
-        tournamentInfo.innerHTML = `
-            <h3>📊 Résumé du Tournoi</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                <div><strong>${totalParticipants}</strong> Participants</div>
-                <div><strong>${activeTeams}</strong> Équipes actives</div>
-                ${substitutes > 0 ? `<div><strong>${substitutes}</strong> Remplaçant${substitutes !== 1 ? 's' : ''}</div>` : ''}
-                <div><strong>${this.tournament ? this.tournament.length : 0}</strong> Round${this.tournament && this.tournament.length !== 1 ? 's' : ''}</div>
-            </div>
-        `;
+        
+
+        // Mettre à jour le statut dans la navbar
+        this.updateTournamentStatus();
 
         // Display teams
         this.displayTeams(teamsContainer);
@@ -310,20 +532,47 @@ class UnoTournamentOrganizer {
         }
     }
 
+    // Mettre à jour le statut du tournoi dans l'en-tête
+    updateTournamentStatus() {
+        const statusElement = document.getElementById('tournamentStatusInfo');
+        if (!statusElement) return;
+
+        const totalParticipants = this.participants.length;
+        const activeTeams = this.teams.length;
+        const completedMatches = this.tournament && this.tournament.phase1 ? 
+            this.tournament.phase1.filter(team => team.completed).length : 0;
+
+        statusElement.innerHTML = `
+            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                <div class="status-item">
+                    <span class="status-number">${totalParticipants}</span>
+                    <span class="status-label">Participants</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-number">${activeTeams}</span>
+                    <span class="status-label">Équipes</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-number">${completedMatches}/${activeTeams}</span>
+                    <span class="status-label">Matchs Terminés</span>
+                </div>
+            </div>
+        `;
+    }
+
     displayTeams(container) {
-        container.innerHTML = '<h3 style="text-align: center; margin-bottom: 20px; color: var(--uno-dark);">👥 Équipes Formées</h3>';
+        // Masquer l'ancien conteneur scroll et afficher la navigation
+        container.style.display = 'none';
         
-        this.teams.forEach((team, index) => {
-            const teamCard = document.createElement('div');
-            teamCard.className = 'team-card';
-            teamCard.innerHTML = `
-                <div class="team-name">${team.name}</div>
-                <ul class="team-members">
-                    ${team.members.map(member => `<li>${member}</li>`).join('')}
-                </ul>
-            `;
-            container.appendChild(teamCard);
-        });
+        // Mettre à jour la sidebar avec les équipes
+        if (typeof updateSidebarContent === 'function') {
+            updateSidebarContent();
+        }
+        
+        // Initialiser et afficher la navigation des équipes
+        if (typeof initializeTeamNavigation === 'function') {
+            initializeTeamNavigation();
+        }
     }
 
     displaySubstitutes(container) {
@@ -345,8 +594,25 @@ class UnoTournamentOrganizer {
         const phaseContainer = document.getElementById('phaseContainer');
         
         if (this.tournament.currentPhase === 1) {
+            // Afficher la navigation des équipes pour la Phase 1
+            const teamsNavigation = document.getElementById('teamsNavigation');
+            if (teamsNavigation) {
+                teamsNavigation.style.display = 'block';
+            }
+            
+            // Initialiser la navigation si elle n'est pas encore active
+            if (typeof initializeTeamNavigation === 'function') {
+                initializeTeamNavigation();
+            }
+            
+            // Masquer l'ancien affichage des matchs
             this.displayTeamMatches();
         } else if (this.tournament.currentPhase === 2) {
+            // Masquer la navigation et afficher le tournoi des vainqueurs
+            const teamsNavigation = document.getElementById('teamsNavigation');
+            if (teamsNavigation) {
+                teamsNavigation.style.display = 'none';
+            }
             this.displayWinnersTournament();
         }
     }
@@ -396,7 +662,7 @@ class UnoTournamentOrganizer {
             const eliminationHtml = teamData.internalMatches.map(round => {
                 const playersHtml = round.players.map(player => `
                     <div class="player-card ${round.eliminated === player ? 'eliminated' : ''} ${round.completed && round.eliminated !== player ? 'survivor' : ''}" 
-                         onclick="tournamentOrganizer.selectPlayerToEliminate('${round.id}', '${player}')"
+                         onclick="eliminatePlayer('${round.id}', '${player}')"
                          style="cursor: ${round.completed ? 'default' : 'pointer'};">
                         <span class="player-name">${player}</span>
                         ${round.eliminated === player ? '<span class="elimination-mark">❌ Éliminé</span>' : ''}
@@ -420,7 +686,7 @@ class UnoTournamentOrganizer {
                                 <p style="margin-bottom: 10px; color: var(--norsys-dark); font-style: italic;">
                                     Cliquez sur le joueur à éliminer
                                 </p>
-                                <button class="btn btn-success" onclick="tournamentOrganizer.confirmElimination('${round.id}')" 
+                                <button class="btn btn-success" onclick="confirmElimination('${round.id}')" 
                                         ${!round.eliminated ? 'disabled' : ''}>
                                     ✅ Confirmer l'élimination
                                 </button>
@@ -464,12 +730,12 @@ class UnoTournamentOrganizer {
                         <div class="match-card ${match.completed ? 'match-completed' : ''}" data-match-id="${match.id}">
                             <div class="match-teams">
                                 <span class="match-team ${match.winner === 'player1' ? 'winner' : ''}" 
-                                      onclick="tournamentOrganizer.selectFinalWinner('${match.id}', 'player1')">
+                                      onclick="selectFinalWinner('${match.id}', 'player1')">
                                     ${player1Name}
                                 </span>
                                 <span class="vs">VS</span>
                                 <span class="match-team ${match.winner === 'player2' ? 'winner' : ''}" 
-                                      onclick="tournamentOrganizer.selectFinalWinner('${match.id}', 'player2')">
+                                      onclick="selectFinalWinner('${match.id}', 'player2')">
                                     ${player2Name}
                                 </span>
                             </div>
@@ -478,7 +744,7 @@ class UnoTournamentOrganizer {
                                     🏆 Vainqueur: ${match.winner === 'player1' ? player1Name : player2Name}
                                 </div>` : 
                                 `<div class="match-controls">
-                                    <button class="btn btn-success" onclick="tournamentOrganizer.confirmFinalMatch('${match.id}')">
+                                    <button class="btn btn-success" onclick="confirmFinalMatch('${match.id}')">
                                         ✅ Confirmer le match
                                     </button>
                                 </div>`
@@ -531,14 +797,34 @@ class UnoTournamentOrganizer {
     }
 
     selectPlayerToEliminate(roundId, player) {
+        // Vérifier les permissions
+        if (!this.checkPermissions('Sélectionner Joueur à Éliminer')) {
+            return;
+        }
+
         const round = this.findEliminationRound(roundId);
-        if (!round || round.completed) return;
+        if (!round || round.completed) {
+            this.showNotification('⚠️ Ce round est déjà terminé', 'warning');
+            return;
+        }
 
         round.eliminated = player;
         this.displayTeamMatches();
+        
+        // Mettre à jour la sidebar si elle existe
+        if (typeof updateSidebarContent === 'function') {
+            updateSidebarContent();
+        }
+        
+        this.showNotification(`👤 ${player} sélectionné pour élimination`, 'info');
     }
 
     confirmElimination(roundId) {
+        // Vérifier les permissions
+        if (!this.checkPermissions('Confirmer Élimination')) {
+            return;
+        }
+
         const round = this.findEliminationRound(roundId);
         if (!round || !round.eliminated) {
             alert('⚠️ Veuillez d\'abord sélectionner le joueur à éliminer !');
@@ -549,7 +835,18 @@ class UnoTournamentOrganizer {
         this.processElimination(round);
         this.displayTeamMatches();
         this.checkPhase1Completion();
-        this.autoSave(); // Auto-save after each elimination
+        this.autoSaveToJSON(); // Auto-save after each elimination
+        this.saveForSchema(); // Sauvegarder pour le schéma
+        
+        // Mettre à jour la sidebar si elle existe
+        if (typeof updateSidebarContent === 'function') {
+            updateSidebarContent();
+        }
+        
+        // Mettre à jour le statut du tournoi
+        this.updateTournamentStatus();
+        
+        this.showNotification(`✅ Élimination confirmée: ${round.eliminated}`, 'success');
     }
 
     selectFinalWinner(matchId, winner) {
@@ -751,7 +1048,7 @@ class UnoTournamentOrganizer {
                         </div>`
                     ).join('')}
                 </div>
-                <button class="btn btn-accent" onclick="tournamentOrganizer.startPhase2()" style="margin-top: 15px; font-size: 1.1rem;">
+                <button class="btn btn-accent" onclick="startPhase2()" style="margin-top: 15px; font-size: 1.1rem;">
                     🚀 Commencer la Phase 2 - Tournoi des Vainqueurs
                 </button>
             </div>
@@ -776,7 +1073,7 @@ class UnoTournamentOrganizer {
                 <p style="color: var(--norsys-dark); margin-bottom: 15px;">
                     Une fois tous les vainqueurs d'équipes déterminés, la Phase 2 commencera automatiquement !
                 </p>
-                <button class="btn btn-secondary" onclick="tournamentOrganizer.resetTournament()">
+                <button class="btn btn-secondary" onclick="resetTournament()">
                     🔄 Recommencer le tournoi
                 </button>
             </div>
@@ -917,23 +1214,22 @@ class UnoTournamentOrganizer {
     }
 
     autoSave() {
-        if (this.autoSaveEnabled && this.tournament) {
-            const tournamentData = {
-                participants: this.participants,
-                teams: this.teams,
-                tournament: this.tournament,
-                substitutes: this.substitutes,
-                timestamp: new Date().toISOString(),
-                version: '1.0'
-            };
+        // Rediriger vers la nouvelle méthode JSON
+        this.autoSaveToJSON();
+    }
 
-            try {
-                localStorage.setItem('norsys_uno_tournament', JSON.stringify(tournamentData));
-                console.log('Auto-sauvegarde effectuée');
-            } catch (error) {
-                console.error('Erreur auto-sauvegarde:', error);
-            }
-        }
+    saveForSchema() {
+        const schemaData = {
+            participants: this.participants,
+            teams: this.teams,
+            tournament: this.tournament,
+            substitutes: this.substitutes,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Sauvegarder avec la clé que le schéma recherche
+        localStorage.setItem('norsys_uno_tournament', JSON.stringify(schemaData));
+        console.log('✅ Données sauvegardées pour le schéma:', schemaData);
     }
 
     showNotification(message, type = 'info') {
@@ -956,6 +1252,15 @@ class UnoTournamentOrganizer {
                 notification.remove();
             }
         }, 5000);
+    }
+
+    // Vérifier les permissions avant une action
+    checkPermissions(action) {
+        if (this.isReadOnly) {
+            this.showNotification(`🔒 Action "${action}" non autorisée en mode participant`, 'warning');
+            return false;
+        }
+        return true;
     }
 
     clearSavedTournament() {
@@ -1315,6 +1620,11 @@ class UnoTournamentOrganizer {
     }
 
     generateTournament() {
+        // Vérifier les permissions
+        if (!this.checkPermissions('Générer Tournoi')) {
+            return;
+        }
+
         const input = document.getElementById('participantInput').value.trim();
         const participants = this.parseParticipants(input);
 
@@ -1331,7 +1641,7 @@ class UnoTournamentOrganizer {
         
         // Auto-save the new tournament
         this.autoSaveEnabled = true;
-        this.autoSave();
+        this.autoSaveToJSON();
         
         // Broadcast change
         this.broadcastChange('Nouveau tournoi généré');
@@ -1747,67 +2057,4 @@ class UnoTournamentOrganizer {
 </body>
 </html>`;
     }
-}
-
-// Initialize the tournament organizer when the page loads
-let tournamentOrganizer;
-document.addEventListener('DOMContentLoaded', () => {
-    tournamentOrganizer = new UnoTournamentOrganizer();
-    tournamentOrganizer.autoSaveEnabled = false; // Will be enabled after first save
-    
-    // Add some fun effects
-    addVisualEffects();
-});
-
-function addVisualEffects() {
-    // Add floating particles effect
-    createFloatingParticles();
-    
-    // Add smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-}
-
-function createFloatingParticles() {
-    const colors = ['#2196F3', '#1976D2', '#64B5F6', '#E3F2FD'];
-    const container = document.body;
-    
-    for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float ${5 + Math.random() * 10}s infinite linear;
-            left: ${Math.random() * 100}vw;
-            top: ${Math.random() * 100}vh;
-            pointer-events: none;
-            z-index: -1;
-        `;
-        container.appendChild(particle);
-    }
-    
-    // Add CSS animation for floating particles
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
 }
