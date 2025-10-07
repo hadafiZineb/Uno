@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Tournoi UNO Organizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="norsys-logo">
+                <svg width="200" height="60" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background rectangles with rounded corners -->
+                    <rect x="10" y="10" width="100" height="100" rx="15" fill="#000000"/>
+                    
+                    <!-- Colorful circular elements -->
+                    <circle cx="35" cy="35" r="18" fill="none" stroke="#00ff00" stroke-width="3"/>
+                    <circle cx="85" cy="35" r="18" fill="none" stroke="#ff6600" stroke-width="3"/>
+                    <circle cx="60" cy="60" r="18" fill="none" stroke="#0066ff" stroke-width="3"/>
+                    <circle cx="35" cy="85" r="18" fill="none" stroke="#ff0066" stroke-width="3"/>
+                    <circle cx="85" cy="85" r="18" fill="none" stroke="#ffff00" stroke-width="3"/>
+                    
+                    <!-- Central connecting lines -->
+                    <path d="M35,35 L85,35 L60,60 L35,85 L85,85 L60,60 Z" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+                    
+                    <!-- NORSYS text -->
+                    <text x="140" y="45" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#000000">norsys</text>
+                    
+                    <!-- AFRIQUE text -->
+                    <text x="140" y="75" font-family="Arial, sans-serif" font-size="18" font-weight="normal" fill="#666666" letter-spacing="2px">AFRIQUE</text>
+                </svg>
+            </div>
+            <h1 class="title">🎯 TOURNOI UNO</h1>
+            <p class="subtitle">Campus Norsys Agadir - Centre d'Excellence Technologique</p>
+            <p class="campus-description">Formation • Innovation • Développement IT • Écosystème Tech Marocain</p>
+        </header>
+
+        <main class="main-content">
+            <section class="input-section">
+                <div class="card">
+                    <h2>📋 Liste des Participants</h2>
+                    <textarea 
+                        id="participantInput" 
+                        placeholder="Entrez les noms des participants, un par ligne ou séparés par des virgules...&#10;Exemple:&#10;Marie&#10;Jean&#10;Sophie&#10;Pierre&#10;...">
+                    </textarea>
+                    <div class="button-group">
+                        <button id="generateTournament" class="btn btn-primary">
+                            🚀 Générer le Tournoi
+                        </button>
+                        <button id="loadTournament" class="btn btn-success" style="display: none;">
+                            📂 Continuer le Tournoi Sauvegardé
+                        </button>
+                        <button id="importTournament" class="btn btn-accent">
+                            📥 Importer Tournoi
+                        </button>
+                        <button id="clearInput" class="btn btn-secondary">
+                            🗑️ Effacer
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" accept=".json" style="display: none;">
+                    
+                    <div class="collaboration-section" style="margin-top: 20px; padding: 20px; background: var(--norsys-light); border-radius: 8px;">
+                        <h3 style="color: var(--norsys-text); margin-bottom: 15px;">👥 Mode Collaboration</h3>
+                        <div class="user-setup" style="margin-bottom: 15px;">
+                            <label for="userName" style="color: var(--norsys-text); display: block; margin-bottom: 5px;">Votre nom:</label>
+                            <input type="text" id="userName" placeholder="Entrez votre nom..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 200px;">
+                            <button id="enableCollaboration" class="btn btn-success" style="margin-left: 10px;">
+                                🤝 Activer Collaboration
+                            </button>
+                        </div>
+                        <div id="collaborationStatus" style="display: none;">
+                            <p style="color: var(--success-green); font-weight: 600;">✅ Mode collaboration activé</p>
+                            <div id="activeUsers" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div class="sharing-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                            <h4 style="color: var(--norsys-text); margin-bottom: 10px;">🌐 Partage Réseau</h4>
+                            <p style="color: var(--norsys-text); margin-bottom: 10px; font-size: 0.9rem;">
+                                Pour collaborer en temps réel, tous les utilisateurs doivent accéder via la même URL
+                            </p>
+                            <button id="showNetworkInstructions" class="btn btn-primary" style="margin-top: 10px;">
+                                📡 Instructions Serveur Local
+                            </button>
+                        </div>
+                    </div>
+                    <div class="participant-count">
+                        <span id="participantCounter">0 participants</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="card">
+                    <h2>🏆 Tournoi Généré</h2>
+                    
+                    <div class="tournament-info" id="tournamentInfo">
+                        <!-- Tournament summary will be inserted here -->
+                    </div>
+
+                    <div class="teams-container" id="teamsContainer">
+                        <!-- Teams will be inserted here -->
+                    </div>
+
+                    <div class="phase-container" id="phaseContainer">
+                        <div class="team-matches-container" id="teamMatchesContainer">
+                            <!-- Internal team matches will be inserted here -->
+                        </div>
+                        
+                        <div class="winners-tournament-container" id="winnersTournamentContainer" style="display: none;">
+                            <!-- Winners tournament will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="saveTournament" class="btn btn-success">
+                            💾 Sauvegarder
+                        </button>
+                        <button id="exportTournament" class="btn btn-accent">
+                            📤 Exporter
+                        </button>
+                        <button id="exportPowerPointBtn" class="btn powerpoint-btn">
+                            <span class="btn-content">
+                                <i class="icon">🎯</i>
+                                <span class="btn-text">Export PowerPoint</span>
+                                <span class="btn-animation"></span>
+                            </span>
+                            <span class="btn-shine"></span>
+                        </button>
+                        <button id="printTournament" class="btn btn-accent">
+                            🖨️ Imprimer
+                        </button>
+                        <button id="newTournament" class="btn btn-secondary">
+                            🔄 Nouveau Tournoi
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Made with ❤️ by Norsys Campus Agadir | © 2025</p>
+            <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">
+                Innovation • Formation • Excellence Technologique
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

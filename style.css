@@ -1,0 +1,878 @@
+/* UNO Tournament Organizer - Modern Stylish CSS */
+
+* {
+    margin: 0;
+    pa.card {
+    background: var(--norsys-white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #E0E0E0;
+}
+    box-sizing: border-box;
+}
+
+:root {
+    --norsys-primary: #2196F3;
+    --norsys-secondary: #1976D2;
+    --norsys-accent: #64B5F6;
+    --norsys-light: #E3F2FD;
+    --norsys-dark: #0D47A1;
+    --norsys-white: #FFFFFF;
+    --norsys-gray: #F5F5F5;
+    --norsys-text: #212121;
+    --success-green: #4CAF50;
+    --warning-orange: #FF9800;
+    --error-red: #F44336;
+    --shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
+    --shadow-hover: 0 8px 30px rgba(33, 150, 243, 0.25);
+    --gradient-primary: linear-gradient(135deg, var(--norsys-primary), var(--norsys-secondary));
+    --gradient-secondary: linear-gradient(135deg, var(--norsys-secondary), var(--norsys-accent));
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--norsys-gray);
+    min-height: 100vh;
+    color: var(--norsys-text);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: slideDown 0.8s ease-out;
+}
+
+.norsys-logo {
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+.title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--norsys-white);
+    font-weight: 600;
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.campus-description {
+    font-size: 0.9rem;
+    color: var(--norsys-light);
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+/* Card Styles */
+.card {
+    background: var(--uno-white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.card h2 {
+    color: var(--norsys-text);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Input Section */
+.input-section {
+    margin-bottom: 30px;
+    animation: slideUp 0.8s ease-out;
+}
+
+#participantInput {
+    width: 100%;
+    min-height: 200px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    transition: all 0.3s ease;
+    background: var(--norsys-white);
+}
+
+#participantInput:focus {
+    outline: none;
+    border-color: var(--norsys-primary);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    background: var(--norsys-white);
+}
+
+.participant-count {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--norsys-text);
+    font-size: 1.1rem;
+}
+
+/* Button Styles */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: var(--norsys-primary);
+    color: var(--norsys-white);
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--norsys-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.4);
+}
+
+.btn-secondary {
+    background: var(--norsys-white);
+    color: var(--norsys-primary);
+    border: 1px solid var(--norsys-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+    background: var(--norsys-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-accent {
+    background: var(--norsys-accent);
+    color: var(--norsys-white);
+    box-shadow: 0 2px 4px rgba(100, 181, 246, 0.3);
+}
+
+.btn-accent:hover {
+    background: var(--norsys-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(100, 181, 246, 0.4);
+}
+
+.btn-success {
+    background: var(--success-green);
+    color: var(--norsys-white);
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+.btn-success:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+}
+
+.btn-winner {
+    background: var(--warning-orange);
+    color: var(--norsys-white);
+    box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-winner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
+/* Tournament Results */
+.results-section {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.tournament-info {
+    background: var(--gradient-secondary);
+    color: var(--norsys-white);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.tournament-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+/* Teams Container */
+.teams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.team-card {
+    background: var(--norsys-white);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid;
+    border: 1px solid #E0E0E0;
+}
+
+.team-card:nth-child(4n+1) { border-left-color: var(--norsys-primary); }
+.team-card:nth-child(4n+2) { border-left-color: var(--norsys-secondary); }
+.team-card:nth-child(4n+3) { border-left-color: var(--norsys-accent); }
+.team-card:nth-child(4n+4) { border-left-color: var(--success-green); }
+
+.team-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.team-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--norsys-text);
+    margin-bottom: 15px;
+}
+
+.team-members {
+    list-style: none;
+}
+
+.team-members li {
+    padding: 8px 15px;
+    margin: 5px 0;
+    background: var(--norsys-light);
+    border-radius: 16px;
+    color: var(--norsys-text);
+    font-weight: 500;
+}
+
+/* Brackets */
+.brackets-container {
+    margin-top: 30px;
+}
+
+.bracket-round {
+    margin-bottom: 30px;
+}
+
+.bracket-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--norsys-white);
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--gradient-primary);
+    border-radius: 10px;
+}
+
+.bracket-matches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.match-card {
+    background: var(--norsys-white);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--norsys-light);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.match-card:hover {
+    border-color: var(--norsys-secondary);
+    transform: translateY(-3px);
+}
+
+.match-card.match-completed {
+    border-color: var(--success-green);
+    background: linear-gradient(145deg, #f0fdf4, #ffffff);
+}
+
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: var(--norsys-dark);
+    margin-bottom: 15px;
+}
+
+.match-team {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.match-team:hover {
+    background: var(--norsys-light);
+}
+
+.match-team.winner {
+    background: var(--success-green);
+    color: var(--norsys-white);
+    border-color: var(--success-green);
+    font-weight: 700;
+}
+
+.vs {
+    color: var(--norsys-primary);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.match-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.match-status {
+    text-align: center;
+    font-weight: 600;
+    color: var(--success-green);
+    margin-top: 10px;
+}
+
+.match-winner-display {
+    text-align: center;
+    background: var(--success-green);
+    color: var(--norsys-white);
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 20px;
+    color: var(--norsys-white);
+    opacity: 0.8;
+}
+
+/* Player Cards for Elimination */
+.player-card {
+    background: var(--norsys-white);
+    border: 2px solid var(--norsys-light);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.player-card:hover:not(.eliminated):not(.survivor) {
+    border-color: var(--error-red);
+    background: rgba(255, 0, 102, 0.1);
+    transform: translateY(-2px);
+}
+
+.player-card.eliminated {
+    background: rgba(255, 0, 102, 0.1);
+    border-color: var(--error-red);
+    opacity: 0.7;
+}
+
+.player-card.survivor {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: var(--success-green);
+}
+
+.player-name {
+    font-weight: 600;
+    color: var(--norsys-dark);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.elimination-mark {
+    color: var(--error-red);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.survivor-mark {
+    color: var(--success-green);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.elimination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    min-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.notification-success {
+    background: var(--success-green);
+    color: white;
+}
+
+.notification-error {
+    background: var(--error-red);
+    color: white;
+}
+
+.notification-info {
+    background: var(--norsys-primary);
+    color: white;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 15px;
+}
+
+.notification-close:hover {
+    opacity: 0.7;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Network Instructions Modal */
+.network-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.network-modal-content {
+    background: var(--norsys-white);
+    border-radius: 12px;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.network-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #E0E0E0;
+    background: var(--norsys-primary);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.network-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.network-modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.network-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.network-modal-body {
+    padding: 30px;
+}
+
+.network-modal-body h3 {
+    color: var(--norsys-primary);
+    margin: 25px 0 15px 0;
+    font-size: 1.3rem;
+    border-left: 4px solid var(--norsys-primary);
+    padding-left: 15px;
+}
+
+.instruction-step {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--norsys-accent);
+}
+
+.instruction-step p {
+    margin: 8px 0;
+    color: var(--norsys-text);
+}
+
+.instruction-step code {
+    background: var(--norsys-dark);
+    color: #00ff00;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.network-tips {
+    background: var(--norsys-light);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 25px;
+}
+
+.network-tips h4 {
+    color: var(--norsys-primary);
+    margin-bottom: 15px;
+}
+
+.network-tips ul {
+    color: var(--norsys-text);
+    margin-left: 20px;
+}
+
+.network-tips li {
+    margin: 8px 0;
+}
+
+.network-modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #E0E0E0;
+    text-align: center;
+}
+
+/* Pulse animation for logo */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .title {
+        font-size: 2.5rem;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .teams-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .bracket-matches {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Print Styles */
+/* PowerPoint Export Button - Stylé Vert Moderne */
+.powerpoint-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    transform: translateY(0);
+}
+
+.powerpoint-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 50%, #155724 100%);
+}
+
+.powerpoint-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+.powerpoint-btn .btn-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.powerpoint-btn .icon {
+    font-size: 1.2em;
+    animation: pulse 2s infinite;
+}
+
+.powerpoint-btn .btn-text {
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.powerpoint-btn .btn-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+    z-index: 1;
+}
+
+.powerpoint-btn:hover .btn-shine {
+    left: 100%;
+}
+
+.powerpoint-btn .btn-animation {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    animation: dotBlink 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes dotBlink {
+    0%, 50% { opacity: 0; transform: translateY(-50%) scale(0.8); }
+    25% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+    75% { opacity: 0.5; transform: translateY(-50%) scale(1); }
+}
+
+.powerpoint-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    z-index: 1;
+}
+
+.powerpoint-btn:hover::before {
+    transform: translateX(100%);
+}
+
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .header, .input-section, .button-group, .footer {
+        display: none;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
+    
+    .team-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        background: white;
+    }
+}
